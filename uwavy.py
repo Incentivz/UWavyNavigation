@@ -12,6 +12,7 @@ from IPython.core.display import HTML
 # Globals
 plt.rcParams['figure.figsize'] = 12, 8
 ref_img = np.array(Image.open('manhattan.jpg'))
+
 RADIUS = 180
 
 def wide_uturn(leg=10):
@@ -121,7 +122,7 @@ class FlightAnimator:
         self.framerate = framerate
 
 
-    def addPath(self, path, color, label):
+    def add_path(self, path, color, label):
         lobjline = self.ax.plot([],[],lw=2, color=color, alpha=0.5, label=label)[0]
         lobjmarker = self.ax.plot([],[],color=color, marker='d')[0]
 
