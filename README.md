@@ -1,5 +1,7 @@
+Check out the [library module](uwavy.py) for more details
+
+
 ```python
-# Check out the library module <a href=uwavy.py>uwavy.py</a> for more details
 from uwavy import *
 ```
 
@@ -69,7 +71,7 @@ HTML(ani.toHTML5Video())
 ```
 
 
-![png](README_files/README_9_0.png)
+![png](README_files/README_10_0.png)
 
 
 If you can't see the video in your browser, [click here](./README_files/IMUonly.mp4)
@@ -90,7 +92,7 @@ plot_ref_img();
 ```
 
 
-![png](README_files/README_13_0.png)
+![png](README_files/README_14_0.png)
 
 
 ### Simulating the onboard camera
@@ -120,7 +122,7 @@ plt.axis('off');
 ```
 
 
-![png](README_files/README_15_0.png)
+![png](README_files/README_16_0.png)
 
 
 ### Comparing the captured image with the database
@@ -140,7 +142,7 @@ plot_line_error(pos, ax)
 ```
 
 
-![png](README_files/README_17_0.png)
+![png](README_files/README_18_0.png)
 
 
 ### Searching the database for the captured image
@@ -166,7 +168,7 @@ plt.axis('off');
 ```
 
 
-![png](README_files/README_19_0.png)
+![png](README_files/README_20_0.png)
 
 
 ## Synthesis
