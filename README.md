@@ -1,3 +1,4 @@
+# UWavy Navigation
 Check out the [library module](uwavy.py) for more details
 
 
@@ -5,7 +6,7 @@ Check out the [library module](uwavy.py) for more details
 from uwavy import *
 ```
 
-# UWavy Navigation - Solution
+# Solution
 
 1. [Overview](#Overview)
 2. [Inertial Navigation](#Inertial-Navigation)
