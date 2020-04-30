@@ -12,8 +12,8 @@ from IPython.core.display import HTML
 # Globals
 plt.rcParams['figure.figsize'] = 12, 8
 ref_img = np.array(Image.open('manhattan.jpg'))
-
 RADIUS = 180
+spiral = [] # Filled in later
 
 def wide_uturn(leg=10):
     ones = np.ones((leg,1));
@@ -32,6 +32,39 @@ def s_turn(short_leg=5):
     leg2 = np.hstack((zeros*2, -ones*2))
     leg3 = np.hstack((ones, zeros))
     return np.concatenate((leg1, leg2, leg3), axis=0)
+
+def taxicab_norm(x1, y1, x2, y2):
+    return abs(x1 - x2) + abs(y1 - y2)
+
+def euclid_norm(x1, y1, x2, y2):
+    return np.sqrt(np.square(x1 - x2) + np.square(y1 - y2))
+
+def spiral_path(start_pos=(0,0), max_r=RADIUS, norm_fn=taxicab_norm):
+    start_pos = np.array(start_pos, dtype=int)
+    path = []
+    for r in range(max_r+1): # Begin at start_pos and progress radially outwards
+        # x,y must be somewhere in bounding box start_pos - r and start_pos + r, exact bounds depend on norm_fn
+        for x in range(start_pos[0]-r, start_pos[0]+r+1):
+            for y in range(start_pos[1]-r, start_pos[1]+r+1):
+                d = norm_fn(start_pos[0], start_pos[1], x, y) # distance
+                if abs(d-r) < 1.0/2: # d < r with some wiggle room
+                    path.append((x, y))
+    return np.array(path)
+spiral = spiral_path(max_r=5)
+
+def search_spiral(start_pos, test_img, threshold=1.0):
+    search_coords = spiral + start_pos
+    best_match = float('inf')
+    best_coords = (None, None)
+    for loc in search_coords:
+        ref_slice = take_picture(loc)
+        match = np.sum(np.square(test_img - ref_slice)) / ref_slice.size
+        if threshold != None and match < threshold:
+            return (match, loc)
+        if match < best_match:
+            best_match = match
+            best_coords = loc
+    return (best_match, best_coords)
 
 def imread(path, grayscale=False):
     if grayscale:
@@ -101,11 +134,11 @@ def plot_heat_map(drone_position, ax):
     errs_new[RADIUS:-RADIUS,RADIUS:-RADIUS] = errs
     errs = errs_new
 
-    ax.imshow(errs, cmap="afmhot", interpolation='nearest')
+    ax.imshow(errs, cmap="afmhot", interpolation='nearest')    
 
 class FlightAnimator:
 
-    def __init__(self, framerate = 10):
+    def __init__(self, framerate = 10, padding=10):
         self.lines = []
         self.fig, self.axs = plt.subplots(2,1, figsize=(7,5), gridspec_kw={'height_ratios': [10, 1]})
         self.fig.tight_layout()
@@ -120,6 +153,7 @@ class FlightAnimator:
         self.ani_obj = None
 
         self.framerate = framerate
+        self.padding = padding
 
 
     def add_path(self, path, color, label):
@@ -152,9 +186,8 @@ class FlightAnimator:
 
         self.ax.axis('equal')
         self.ax.axis('off')
-        FIELD_OF_VIEW = 500
-        self.ax.set_xlim(self.paths[0].min(axis=0)[0] - FIELD_OF_VIEW//2, self.paths[0].max(axis=0)[0] + FIELD_OF_VIEW//2)
-        self.ax.set_ylim(self.paths[0].min(axis=0)[1] - FIELD_OF_VIEW//2, self.paths[0].max(axis=0)[1] + FIELD_OF_VIEW//2)
+        self.ax.set_xlim(self.paths[0].min(axis=0)[0] - self.padding, self.paths[0].max(axis=0)[0] + self.padding)
+        self.ax.set_ylim(self.paths[0].min(axis=0)[1] - self.padding, self.paths[0].max(axis=0)[1] + self.padding)
         return self.lines
 
     def animate_path(self, i):
