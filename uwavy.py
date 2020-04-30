@@ -87,19 +87,19 @@ def plot_ref_img(ax=None, drone_pos=None, crop_height=1):
         ax.set_title("Reference Image")
     ax.imshow(ref_img.take(range(int(ref_img.shape[0] * crop_height)), axis=0), alpha = 1 if drone_pos is None else .75 );
     ax.axis('off');
-    
+
     if drone_pos is not None:
         from matplotlib.patches import Rectangle;
         N = 150;
         pos = np.flip(drone_pos - RADIUS)
         ax.add_patch(Rectangle(pos, RADIUS * 2, RADIUS * 2, color="dodgerblue", fill=False, linewidth=3, label="Camera View"));
         plt.legend()
-        
+
 def plot_line_error(drone_position, ax):
     # Plot a horizontal line representing the positions searched
     ax.axhline(drone_position[0])
-    
-    # Take successive slices of REF_IMG along a vertical axis that runs through (x,y) and plot the error 
+
+    # Take successive slices of REF_IMG along a vertical axis that runs through (x,y) and plot the error
     ref_slice = take_picture(drone_position)
     errs = []
     rng = range(0, ref_img.shape[1], 5)
@@ -109,7 +109,7 @@ def plot_line_error(drone_position, ax):
         errs.append(err)
     errs = np.array(errs)
     ax.twinx().plot(rng, errs, 'r', linewidth=3, label="Mean Squared Error");
-    
+
 def plot_heat_map(drone_position, ax):
     if ax is None:
         plt.title("Error Heatmap")
@@ -134,7 +134,7 @@ def plot_heat_map(drone_position, ax):
     errs_new[RADIUS:-RADIUS,RADIUS:-RADIUS] = errs
     errs = errs_new
 
-    ax.imshow(errs, cmap="afmhot", interpolation='nearest')    
+    ax.imshow(errs, cmap="afmhot", interpolation='nearest')
 
 class FlightAnimator:
 
@@ -144,7 +144,7 @@ class FlightAnimator:
         self.fig.tight_layout()
         self.axs[1].axis('off')
         self.ax = self.axs[0]
-        
+
         self.img = ref_img
 
         self.paths = []
@@ -202,10 +202,19 @@ class FlightAnimator:
         return self.lines
 
     def toHTML5Video(self):
-        return FuncAnimation(self.fig, 
-                             self.animate_path, 
-                             init_func=self.initAnimation, 
-                             frames=len(self.paths[0]) + 1, 
-                             blit=True, 
+        return FuncAnimation(self.fig,
+                             self.animate_path,
+                             init_func=self.initAnimation,
+                             frames=len(self.paths[0]) + 1,
+                             blit=True,
                              interval = self.framerate
                             ).to_html5_video()
+
+    def save(self, path):
+        FuncAnimation(self.fig,
+                             self.animate_path,
+                             init_func=self.initAnimation,
+                             frames=len(self.paths[0]) + 1,
+                             blit=True,
+                             interval = self.framerate
+                            ).save(path)
