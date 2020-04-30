@@ -1,5 +1,5 @@
 ```python
-# Check out the library module "uwavy.py" for more details
+# Check out the library module <a href=uwavy.py>uwavy.py</a> for more details
 from uwavy import *
 ```
 
