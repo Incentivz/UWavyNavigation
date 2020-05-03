@@ -156,8 +156,8 @@ class FlightAnimator:
         self.padding = padding
 
 
-    def add_path(self, path, color, label):
-        lobjline = self.ax.plot([],[],lw=2, color=color, alpha=0.5, label=label)[0]
+    def add_path(self, path, color, **kwargs):
+        lobjline = self.ax.plot([],[], color=color, alpha=0.5, **kwargs)[0]
         lobjmarker = self.ax.plot([],[],color=color, marker='d')[0]
 
         self.lines.append(lobjline)
